@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+    <div class="event-card">
+        <h2 class="event-title">{{ event.title }}</h2>
+        <p><strong>Date:</strong> {{ event.date|date:"j F Y H:i" }}</p>
+        <p><strong>Description:</strong> {{ event.description }}</p>
+        <p><strong>Nombre de participants:</strong> {{ participants_count }}</p>
+        
+        {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Participerez-vous à cet événement ?</label>
+                    <div>
+                        <button type="submit" name="attendance" value="yes" class="btn">
+                            {% if user_participation.is_attending %}
+                                Je participe déjà
+                            {% else %}
+                                Je participe
+                            {% endif %}
+                        </button>
+                        <button type="submit" name="attendance" value="no" class="btn btn-secondary">
+                            {% if not user_participation.is_attending %}
+                                Je ne participe déjà pas
+                            {% else %}
+                                Je ne participe pas
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <p><em>Connectez-vous pour indiquer votre participation.</em></p>
+            <a href="{% url 'login' %}" class="btn">Se connecter</a>
+        {% endif %}
+    </div>
+    
+    <a href="{% url 'event_list' %}" class="btn">Retour à la liste</a>
+{% endblock %}
